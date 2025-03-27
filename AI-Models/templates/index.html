@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rain Prediction</title>
+    <script>
+        function predictRain() {
+            let date = document.getElementById("date").value;
+            fetch("/predict", {
+                method: "POST",
+                body: new URLSearchParams({ "date": date }),
+                headers: { "Content-Type": "application/x-www-form-urlencoded" }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("result").innerText = data.error ? data.error : `Predicted Rainfall: ${data.rainfall_mm} mm`;
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>Rainfall Prediction App</h1>
+    <label for="date">Select a Date:</label>
+    <input type="date" id="date">
+    <button onclick="predictRain()">Predict</button>
+    <p id="result"></p>
+
+    <h2>Upcoming Predictions</h2>
+    <ul>
+        {% for date, rain in predictions %}
+            <li>{{ date }}: {{ rain|round(2) }} mm</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
